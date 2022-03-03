@@ -15,8 +15,12 @@ https://opensource.org/licenses/MIT
 ## Prerequisites
 
 For Ubuntu 16.04 and above
-\# sudo apt-get install cmake autoconf libdrm-dev libssl-dev
+\# sudo apt-get install cmake autoconf libdrm-dev libssl-dev libegl-dev libwayland-dev
 Equivalents for other distributions should work.
+
+Add 'media' user 
+
+Test HDCP under terminal mode or exist X Windows.
 
 
 ## Dependencies
@@ -55,7 +59,7 @@ $ sudo make install
 ```
 $ cd <workspace>
 $ mkdir build; cd build
-$ cmake ../
+$ cmake -DCMAKE_BUILD_TYPE=debug ../
 ```
 4.  Then run
 ```
