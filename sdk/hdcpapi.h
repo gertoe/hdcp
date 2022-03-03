@@ -267,7 +267,7 @@ HDCP_STATUS HDCPEnumerateDisplay(
 HDCP_STATUS HDCPSetProtectionLevel(
                     const uint32_t hdcpHandle,
                     const uint32_t portId,
-                    const HDCP_LEVEL level);
+                    const enum HDCP_LEVEL level);
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief      Get the status of the specified port.
