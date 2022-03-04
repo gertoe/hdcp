@@ -12,29 +12,11 @@
 #include <stdlib.h>
 #include "hdcpapi.h"
 
-#define HDCP_DELAY 10
+#define HDCP_DEFAULT_LEVEL HDCP_LEVEL1
 
 static uint32_t hdcpHandle;
 
-void onhdcpEvent(uint32_t hdcpHandle, uint32_t port, PORT_EVENT pEvent, void *context)
-{
-
-    switch (pEvent) {
-    case PORT_EVENT_PLUG_IN:
-	printf("HDMI plugged In....\n");;
-	break;
-    case PORT_EVENT_PLUG_OUT:
-	printf("HDMI plugged Out....\n");
-	break;
-    case PORT_EVENT_LINK_LOST:
-	printf("HDMI Link lost....\n");;
-	break;
-    default:
-	break;
-    }
-}
-
-char *printhdcpStatus(HDCP_STATUS ret)
+static char *printhdcpStatus(HDCP_STATUS ret)
 {
     char *msg = "";
 
@@ -80,6 +62,31 @@ char *printhdcpStatus(HDCP_STATUS ret)
     return msg;
 }
 
+static void onhdcpEvent(uint32_t hdcpHandle, uint32_t port, PORT_EVENT pEvent, void *context)
+{
+    HDCP_STATUS pl_ret;
+
+    switch (pEvent) {
+    case PORT_EVENT_PLUG_IN:
+	printf("[Port %d] HDMI plugged In....\n", port);
+	pl_ret = HDCPSetProtectionLevel(hdcpHandle, port, HDCP_DEFAULT_LEVEL);
+	printf("*****Set protection level %d on port %d: %s\n", HDCP_DEFAULT_LEVEL, port, printhdcpStatus(pl_ret));
+	break;
+    case PORT_EVENT_PLUG_OUT:
+	/*STEP 6: The HDCP daemon will notify the App by PORT_EVNET_PLUG_OUT if a hotplug-out event is detected. 
+                  App will call HDCPSetProtectionLevel with HDCP_LEVEL0 to disable link in callback function. */
+	printf("[Port %d] HDMI plugged Out....\n", port);
+	pl_ret = HDCPSetProtectionLevel(hdcpHandle, port, HDCP_LEVEL0);
+	printf("*****Set protection level %d on port %d: %s\n", HDCP_LEVEL0, port, printhdcpStatus(pl_ret));
+	break;
+    case PORT_EVENT_LINK_LOST:
+	printf("[Port %d] HDMI Link lost....\n", port);
+	break;
+    default:
+	break;
+    }
+}
+
 
 void my_handler(int s)
 {
@@ -119,7 +126,7 @@ int main(int argc, char *argv[])
 		printf("Port id: %d\n", allportlist.Ports[i].Id);
 		printf("Port status: %d\n", allportlist.Ports[i].status);
 
-		pl_ret = HDCPSetProtectionLevel(hdcpHandle, allportlist.Ports[i].Id, HDCP_LEVEL1);
+		pl_ret = HDCPSetProtectionLevel(hdcpHandle, allportlist.Ports[i].Id, HDCP_DEFAULT_LEVEL);
 
 		printf("*****Set protection level status on port %d: %s\n", i, printhdcpStatus(pl_ret));
 	    }
