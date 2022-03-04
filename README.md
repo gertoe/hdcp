@@ -16,7 +16,7 @@ https://opensource.org/licenses/MIT
 
 1.  For Ubuntu 16.04 and above
 ```
-# sudo apt-get install cmake autoconf libdrm-dev libssl-dev libegl-dev libwayland-dev gcc g++
+sudo apt-get install cmake autoconf libdrm-dev libssl-dev libegl-dev libwayland-dev gcc g++
 ```
 Equivalents for other distributions should work.
 
