@@ -126,9 +126,12 @@ int main(int argc, char *argv[])
 		printf("Port id: %d\n", allportlist.Ports[i].Id);
 		printf("Port status: %d\n", allportlist.Ports[i].status);
 
-		pl_ret = HDCPSetProtectionLevel(hdcpHandle, allportlist.Ports[i].Id, HDCP_DEFAULT_LEVEL);
-
-		printf("*****Set protection level status on port %d: %s\n", i, printhdcpStatus(pl_ret));
+		/* If the App desires HDCP authentication for a connected port, then the App calls 
+		   HDCPSetProtectionLevel with the corresponding port identifier and HDCP_LEVEL1/HDCP_LEVEL2. */
+		if (allportlist.Ports[i].status == 1) {	
+		    pl_ret = HDCPSetProtectionLevel(hdcpHandle, allportlist.Ports[i].Id, HDCP_DEFAULT_LEVEL);
+		    printf("*****Set protection level status on port %d: %s\n", i, printhdcpStatus(pl_ret));
+		}
 	    }
 	}
 
