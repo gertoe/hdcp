@@ -175,7 +175,7 @@ typedef enum _HDCP_STATUS
 enum HDCP_LEVEL
 {
     HDCP_LEVEL0     = 0,   // Disable HDCP
-    HDCP_LEVEL1     = 1,   // Enable port maxmum supported HDCP version.
+    HDCP_LEVEL1     = 1,   // Enable port maximum supported HDCP version.
     HDCP_LEVEL2     = 2   // Force Enable HDCP 2.2 for play Type1 content
 };
 
