@@ -16,12 +16,15 @@ https://opensource.org/licenses/MIT
 
 1.  For Ubuntu 16.04 and above
 ```
-sudo apt-get install cmake autoconf libdrm-dev libssl-dev libegl-dev libwayland-dev gcc g++
+sudo apt-get install cmake autoconf libdrm-dev libssl-dev libegl-dev libwayland-dev gcc g++ git
 ```
 Equivalents for other distributions should work.
 
 2.  Add 'media' user 
-3.  Test HDCP under terminal mode or exit X Windows.
+3.  Test HDCP under terminal mode or exit X Window or disable X Window
+```
+sudo systemctl set-default multi-user
+```
 
 
 ## Dependencies
@@ -60,7 +63,7 @@ $ sudo make install
 ```
 $ cd <workspace>
 $ mkdir build; cd build
-$ cmake -DCMAKE_BUILD_TYPE=debug ../
+$ cmake -DCMAKE_BUILD_TYPE=Debug ../
 ```
 4.  Then run
 ```
