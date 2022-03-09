@@ -13,6 +13,7 @@
 #include "hdcpapi.h"
 
 #define HDCP_DEFAULT_LEVEL HDCP_LEVEL1
+#define HDCP_DELAY 1
 
 static uint32_t hdcpHandle;
 
@@ -69,6 +70,8 @@ static void onhdcpEvent(uint32_t hdcpHandle, uint32_t port, PORT_EVENT pEvent, v
     switch (pEvent) {
     case PORT_EVENT_PLUG_IN:
 	printf("[Port %d] HDMI plugged In....\n", port);
+	printf("[Port %d] HDCP delay %d sec....\n", port, HDCP_DELAY);
+        sleep(HDCP_DELAY);
 	pl_ret = HDCPSetProtectionLevel(hdcpHandle, port, HDCP_DEFAULT_LEVEL);
 	printf("*****Set protection level %d on port %d: %s\n", HDCP_DEFAULT_LEVEL, port, printhdcpStatus(pl_ret));
 	break;
