@@ -14,8 +14,51 @@
 
 #define HDCP_DEFAULT_LEVEL HDCP_LEVEL1
 #define HDCP_DELAY 1
+#define CONNECTED_RETRY 10
 
 static uint32_t hdcpHandle;
+static PortList allportlist;
+static char *printhdcpStatus(HDCP_STATUS ret);
+
+static void onhdcpEvent(uint32_t hdcpHandle, uint32_t port, PORT_EVENT pEvent, void *context)
+{
+    HDCP_STATUS pl_ret;
+    HDCP_STATUS port_ret;
+    int retry;
+
+    switch (pEvent) {
+    case PORT_EVENT_PLUG_IN:
+	printf("[Port %d] HDMI plugged In....\n", port);
+
+	for (retry=0; retry < CONNECTED_RETRY; retry++) {
+	    printf("[Port %d] HDCP delay %d sec....\n", port, HDCP_DELAY);
+            sleep(HDCP_DELAY);
+
+	    pl_ret = HDCPSetProtectionLevel(hdcpHandle, port, HDCP_DEFAULT_LEVEL);
+	    printf("*****Set protection level %d on port %d: %s\n", HDCP_DEFAULT_LEVEL, port, printhdcpStatus(pl_ret));
+	    if (pl_ret == HDCP_STATUS_SUCCESSFUL) {
+                break;
+            }
+	}
+
+	if (retry == CONNECTED_RETRY) {
+	    printf("Over connected retry %d\n", CONNECTED_RETRY);
+	}
+	break;
+    case PORT_EVENT_PLUG_OUT:
+	/*STEP 6: The HDCP daemon will notify the App by PORT_EVNET_PLUG_OUT if a hotplug-out event is detected. 
+                  App will call HDCPSetProtectionLevel with HDCP_LEVEL0 to disable link in callback function. */
+	printf("[Port %d] HDMI plugged Out....\n", port);
+	pl_ret = HDCPSetProtectionLevel(hdcpHandle, port, HDCP_LEVEL0);
+	printf("*****Set protection level %d on port %d: %s\n", HDCP_LEVEL0, port, printhdcpStatus(pl_ret));
+	break;
+    case PORT_EVENT_LINK_LOST:
+	printf("[Port %d] HDMI Link lost....\n", port);
+	break;
+    default:
+	break;
+    }
+}
 
 static char *printhdcpStatus(HDCP_STATUS ret)
 {
@@ -63,34 +106,6 @@ static char *printhdcpStatus(HDCP_STATUS ret)
     return msg;
 }
 
-static void onhdcpEvent(uint32_t hdcpHandle, uint32_t port, PORT_EVENT pEvent, void *context)
-{
-    HDCP_STATUS pl_ret;
-
-    switch (pEvent) {
-    case PORT_EVENT_PLUG_IN:
-	printf("[Port %d] HDMI plugged In....\n", port);
-	printf("[Port %d] HDCP delay %d sec....\n", port, HDCP_DELAY);
-        sleep(HDCP_DELAY);
-	pl_ret = HDCPSetProtectionLevel(hdcpHandle, port, HDCP_DEFAULT_LEVEL);
-	printf("*****Set protection level %d on port %d: %s\n", HDCP_DEFAULT_LEVEL, port, printhdcpStatus(pl_ret));
-	break;
-    case PORT_EVENT_PLUG_OUT:
-	/*STEP 6: The HDCP daemon will notify the App by PORT_EVNET_PLUG_OUT if a hotplug-out event is detected. 
-                  App will call HDCPSetProtectionLevel with HDCP_LEVEL0 to disable link in callback function. */
-	printf("[Port %d] HDMI plugged Out....\n", port);
-	pl_ret = HDCPSetProtectionLevel(hdcpHandle, port, HDCP_LEVEL0);
-	printf("*****Set protection level %d on port %d: %s\n", HDCP_LEVEL0, port, printhdcpStatus(pl_ret));
-	break;
-    case PORT_EVENT_LINK_LOST:
-	printf("[Port %d] HDMI Link lost....\n", port);
-	break;
-    default:
-	break;
-    }
-}
-
-
 void my_handler(int s)
 {
     HDCPDestroy(hdcpHandle);
@@ -115,7 +130,6 @@ int main(int argc, char *argv[])
     printf("*****HDCP creation status: %s\n", printhdcpStatus(ret));
 
     if (ret == HDCP_STATUS_SUCCESSFUL) {
-	PortList allportlist;
 	HDCP_STATUS port_ret = HDCPEnumerateDisplay(hdcpHandle, &allportlist);
 
 	printf("*****Enumerate display status: %s\n", printhdcpStatus(port_ret));
@@ -131,7 +145,7 @@ int main(int argc, char *argv[])
 
 		/* If the App desires HDCP authentication for a connected port, then the App calls 
 		   HDCPSetProtectionLevel with the corresponding port identifier and HDCP_LEVEL1/HDCP_LEVEL2. */
-		if (allportlist.Ports[i].status == 1) {	
+		if (allportlist.Ports[i].status == PORT_STATUS_CONNECTED) {
 		    pl_ret = HDCPSetProtectionLevel(hdcpHandle, allportlist.Ports[i].Id, HDCP_DEFAULT_LEVEL);
 		    printf("*****Set protection level status on port %d: %s\n", i, printhdcpStatus(pl_ret));
 		}
