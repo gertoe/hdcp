@@ -29,6 +29,8 @@ static void onhdcpEvent(uint32_t hdcpHandle, uint32_t port, PORT_EVENT pEvent, v
     switch (pEvent) {
     case PORT_EVENT_PLUG_IN:
 	printf("[Port %d] HDMI plugged In....\n", port);
+	pl_ret = HDCPSetProtectionLevel(hdcpHandle, port, HDCP_LEVEL0);
+	printf("*****Set protection level %d on port %d: %s\n", HDCP_LEVEL0, port, printhdcpStatus(pl_ret));
 
 	for (retry=0; retry < CONNECTED_RETRY; retry++) {
 	    printf("[Port %d] HDCP delay %d sec....\n", port, HDCP_DELAY);
