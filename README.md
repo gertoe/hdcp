@@ -108,7 +108,9 @@ TGL (Tigerlake)     for HDCP1.4 and HDCP2.2
         HDCPGetStatus
         HDCPSetProtectionLevel for HDCP_LEVEL2
 ```
+
     APIs tested internally but not supported by drm-tip kernel :
+
 ```
         HDCPGetKsvList
         HDCPSendSRMData
