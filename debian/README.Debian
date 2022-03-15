@@ -1,0 +1,5 @@
+Intel hdcp for Debian
+
+Created Debian control files for HDCP package.
+
+ -- Cplus Shen <cplus.shen@advantech.com.tw>  Tue, 15 Mar 2022 10:50:54 +0800

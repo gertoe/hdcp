@@ -70,6 +70,7 @@ $ cmake -DCMAKE_BUILD_TYPE=Debug ../
 $ make -j8
 ```
 
+
 ## Install
 
 ```
@@ -85,6 +86,24 @@ This will install the following files (e.g. on Ubuntu):
 -- ...
 ```
 
+## Debian Package
+
+1. Package with debmake command 
+```
+debmake -e <email> -f '<FULL NAME>'
+```
+
+2. Build Debian Package
+
+```
+debuild -uc -us
+```
+
+3. Install package
+```
+dpkg -i hdcp_0.1-1_amd64.deb
+
+```
 
 ## Supported Platforms
 
