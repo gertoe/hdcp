@@ -149,7 +149,7 @@ int main(int argc, char *argv[])
 		   HDCPSetProtectionLevel with the corresponding port identifier and HDCP_LEVEL1/HDCP_LEVEL2. */
 		if (allportlist.Ports[i].status == PORT_STATUS_CONNECTED) {
 		    pl_ret = HDCPSetProtectionLevel(hdcpHandle, allportlist.Ports[i].Id, HDCP_DEFAULT_LEVEL);
-		    printf("*****Set protection level status on port %d: %s\n", i, printhdcpStatus(pl_ret));
+		    printf("*****Set protection level status on port %d: %s\n", allportlist.Ports[i].Id, printhdcpStatus(pl_ret));
 		}
 	    }
 	}
