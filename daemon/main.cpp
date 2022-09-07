@@ -130,8 +130,12 @@ int32_t InitializeDirectory()
                     strerror(errno));
         return errno;
     }
+    
+    char username_buf[33]; // username buffer
+    getlogin_r(username_buf, 32);
 
-    struct passwd *mediaId = getpwnam("media");
+
+    struct passwd *mediaId = getpwnam(username_buf);
     if (nullptr == mediaId)
     {
         HDCP_ASSERTMESSAGE("Failed to find info for \"media\" user!");
@@ -212,7 +216,11 @@ int32_t main(void)
     HDCP_FUNCTION_ENTER;
 
     int32_t ret = -1;
-    struct passwd *mediaId = getpwnam("media");
+
+    char username_buf[33]; // username buffer
+    getlogin_r(username_buf, 32);
+
+    struct passwd *mediaId = getpwnam(username_buf);
      // This ias_env will be used to determine running with IAS or not
     char *ias_env = NULL;
     ias_env = getenv("XDG_RUNTIME_DIR");
