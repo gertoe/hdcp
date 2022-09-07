@@ -86,6 +86,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 add_subdirectory(common ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/common)
 add_subdirectory(sdk ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/sdk)
 add_subdirectory(daemon ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/daemon)
+add_subdirectory(client ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/client)
 
 configure_file(${CMAKE_SOURCE_DIR}/config/libhdcpsdk.pc.in
             ${CMAKE_BINARY_DIR}/libhdcpsdk.pc
@@ -103,12 +104,15 @@ install(FILES ${CMAKE_BINARY_DIR}/libhdcpsdk.so.${HDCP_VERSION}
         DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR} COMPONENT cp)
 install(FILES ${CMAKE_BINARY_DIR}/libhdcpsdk.pc
         DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}/pkgconfig COMPONENT cp)
+install(PROGRAMS ${CMAKE_BINARY_DIR}/hdcpc
+        DESTINATION ${CMAKE_INSTALL_FULL_BINDIR} COMPONENT cp)
 
 include(${CMAKE_SOURCE_DIR}/config/systemdservice.cmake)
 
 message(STATUS "cmake install prefix : ${CMAKE_INSTALL_PREFIX}")
 message(STATUS "hdcpd install dir : ${CMAKE_INSTALL_BINDIR}")
 message(STATUS "libhdcpsdk.so install dir : ${CMAKE_INSTALL_LIBDIR}")
+message(STATUS "hdcpc install dir : ${CMAKE_INSTALL_BINDIR}")
 
 # Set package information
 set(CPACK_GENERATOR "DEB")

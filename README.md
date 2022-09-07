@@ -14,9 +14,17 @@ https://opensource.org/licenses/MIT
 
 ## Prerequisites
 
-For Ubuntu 16.04 and above
-\# sudo apt-get install cmake autoconf libdrm-dev libssl-dev
+1.  For Ubuntu 16.04 and above
+```
+sudo apt-get install cmake autoconf libdrm-dev libssl-dev libegl-dev libwayland-dev gcc g++ git
+```
 Equivalents for other distributions should work.
+
+2.  Add 'media' user 
+3.  Test HDCP under terminal mode or exit X Window or disable X Window
+```
+sudo systemctl set-default multi-user
+```
 
 
 ## Dependencies
@@ -55,12 +63,13 @@ $ sudo make install
 ```
 $ cd <workspace>
 $ mkdir build; cd build
-$ cmake ../
+$ cmake -DCMAKE_BUILD_TYPE=Debug ../
 ```
 4.  Then run
 ```
 $ make -j8
 ```
+
 
 ## Install
 
@@ -77,6 +86,24 @@ This will install the following files (e.g. on Ubuntu):
 -- ...
 ```
 
+## Debian Package
+
+1. Package with debmake command 
+```
+debmake -e <email> -f '<FULL NAME>'
+```
+
+2. Build Debian Package
+
+```
+debuild -uc -us
+```
+
+3. Install package
+```
+dpkg -i hdcp_0.1-1_amd64.deb
+
+```
 
 ## Supported Platforms
 
@@ -100,7 +127,9 @@ TGL (Tigerlake)     for HDCP1.4 and HDCP2.2
         HDCPGetStatus
         HDCPSetProtectionLevel for HDCP_LEVEL2
 ```
-    APIs tested internally but not supported by drm-tip kernel :
+
+2.  APIs tested internally but not supported by drm-tip kernel :
+
 ```
         HDCPGetKsvList
         HDCPSendSRMData
